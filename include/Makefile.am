@@ -11,6 +11,7 @@ dos_inc.h \
 dos_system.h \
 dosbox.h \
 fpu.h \
+gdbserver.h \
 hardware.h \
 inout.h \
 joystick.h \

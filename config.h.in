@@ -55,6 +55,9 @@
 /* Define to 1 to use a x86 assembly fpu core */
 #undef C_FPU_X86
 
+/* Define to 1 to enable GDB remote serial protocol stub */
+#undef C_GDBSERVER
+
 /* Determines if the compilers supports attributes for structures. */
 #undef C_HAS_ATTRIBUTE
 
@@ -116,11 +119,8 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the `asound' library (-lasound). */
+/* Define to 1 if you have the 'asound' library (-lasound). */
 #undef HAVE_LIBASOUND
-
-/* Define to 1 if you have the <memory.h> header file. */
-#undef HAVE_MEMORY_H
 
 /* Define to 1 if you have the <netinet/in.h> header file. */
 #undef HAVE_NETINET_IN_H
@@ -128,11 +128,14 @@
 /* Define to 1 if you have the <pwd.h> header file. */
 #undef HAVE_PWD_H
 
-/* Define to 1 if you have the `realpath' function. */
+/* Define to 1 if you have the 'realpath' function. */
 #undef HAVE_REALPATH
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#undef HAVE_STDIO_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
@@ -185,28 +188,30 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* The size of `int *', as computed by sizeof. */
+/* The size of 'int *', as computed by sizeof. */
 #undef SIZEOF_INT_P
 
-/* The size of `unsigned char', as computed by sizeof. */
+/* The size of 'unsigned char', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_CHAR
 
-/* The size of `unsigned int', as computed by sizeof. */
+/* The size of 'unsigned int', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_INT
 
-/* The size of `unsigned long', as computed by sizeof. */
+/* The size of 'unsigned long', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_LONG
 
-/* The size of `unsigned long long', as computed by sizeof. */
+/* The size of 'unsigned long long', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_LONG_LONG
 
-/* The size of `unsigned short', as computed by sizeof. */
+/* The size of 'unsigned short', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_SHORT
 
-/* Define to 1 if you have the ANSI C header files. */
+/* Define to 1 if all of the C89 standard headers exist (not just the ones
+   required in a freestanding environment). This macro is provided for
+   backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
 
-/* Define to 1 if your <sys/time.h> declares `struct tm'. */
+/* Define to 1 if your <sys/time.h> declares 'struct tm'. */
 #undef TM_IN_SYS_TIME
 
 /* Version number of package */
@@ -224,16 +229,16 @@
 # endif
 #endif
 
-/* Define to empty if `const' does not conform to ANSI C. */
+/* Define to empty if 'const' does not conform to ANSI C. */
 #undef const
 
-/* Define to `__inline__' or `__inline' if that's what the C compiler
+/* Define to '__inline__' or '__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
 #undef inline
 #endif
 
-/* Define to `unsigned int' if <sys/types.h> does not define. */
+/* Define as 'unsigned int' if <stddef.h> doesn't define. */
 #undef size_t
 
 /* Define to `int` if you don't have socklen_t */

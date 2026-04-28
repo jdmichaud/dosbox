@@ -48,6 +48,9 @@
 #include "mem.h"
 #include "cpu.h"
 #include "debug.h"
+#if C_GDBSERVER
+#include "gdbserver.h"
+#endif
 #include "paging.h"
 #include "inout.h"
 #include "lazyflags.h"
@@ -190,6 +193,9 @@ Bits CPU_Core_Dynrec_Run(void) {
 		#if C_HEAVY_DEBUG
 			if (DEBUG_HeavyIsBreakpoint()) return debugCallback;
 		#endif
+		#if C_GDBSERVER
+			if (GDB_HeavyCheck()) return CBRET_NONE;
+		#endif
 
 		CodePageHandlerDynRec * chandler=0;
 		// see if the current page is present and contains code
@@ -235,6 +241,9 @@ run_block:
 #if C_HEAVY_DEBUG
 			if (DEBUG_HeavyIsBreakpoint()) return debugCallback;
 #endif
+#if C_GDBSERVER
+			if (GDB_HeavyCheck()) return CBRET_NONE;
+#endif
 			if (!GETFLAG(TF)) {
 				if (GETFLAG(IF) && PIC_IRQCheck) return CBRET_NONE;
 				break;
@@ -251,13 +260,19 @@ run_block:
 #if C_HEAVY_DEBUG
 			if (DEBUG_HeavyIsBreakpoint()) return debugCallback;
 #endif
+#if C_GDBSERVER
+			if (GDB_HeavyCheck()) return CBRET_NONE;
+#endif
 			break;
 
 		case BR_Cycles:
 			// cycles went negative, return from the core to handle
 			// external events, schedule the pic...
-#if C_HEAVY_DEBUG			
+#if C_HEAVY_DEBUG
 			if (DEBUG_HeavyIsBreakpoint()) return debugCallback;
+#endif
+#if C_GDBSERVER
+			if (GDB_HeavyCheck()) return CBRET_NONE;
 #endif
 			return CBRET_NONE;
 

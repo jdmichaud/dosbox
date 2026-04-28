@@ -48,6 +48,9 @@
 #include "mem.h"
 #include "cpu.h"
 #include "debug.h"
+#if C_GDBSERVER
+#include "gdbserver.h"
+#endif
 #include "paging.h"
 #include "inout.h"
 #include "fpu.h"
@@ -265,6 +268,9 @@ restart_core:
 	#if C_HEAVY_DEBUG
 		if (DEBUG_HeavyIsBreakpoint()) return debugCallback;
 	#endif
+	#if C_GDBSERVER
+		if (GDB_HeavyCheck()) return CBRET_NONE;
+	#endif
 	CodePageHandler * chandler=0;
 	if (GCC_UNLIKELY(MakeCodePage(ip_point,chandler))) {
 		CPU_Exception(cpu.exception.which,cpu.exception.error);
@@ -303,6 +309,12 @@ run_block:
 			return debugCallback;
 		}
 #endif
+#if C_GDBSERVER
+		if (GDB_HeavyCheck()) {
+			if (dyn_dh_fpu.state_used) DH_FPU_SAVE_REINIT
+			return CBRET_NONE;
+		}
+#endif
 		if (!GETFLAG(TF)) {
 			if (GETFLAG(IF) && PIC_IRQCheck) {
 				if (dyn_dh_fpu.state_used) DH_FPU_SAVE_REINIT
@@ -319,10 +331,16 @@ run_block:
 #if C_HEAVY_DEBUG
 		if (DEBUG_HeavyIsBreakpoint()) return debugCallback;
 #endif
+#if C_GDBSERVER
+		if (GDB_HeavyCheck()) return CBRET_NONE;
+#endif
 		goto restart_core;
 	case BR_Cycles:
-#if C_HEAVY_DEBUG			
+#if C_HEAVY_DEBUG
 		if (DEBUG_HeavyIsBreakpoint()) return debugCallback;
+#endif
+#if C_GDBSERVER
+		if (GDB_HeavyCheck()) return CBRET_NONE;
 #endif
 		if (!dyn_dh_fpu.state_used) return CBRET_NONE;
 		DH_FPU_SAVE_REINIT

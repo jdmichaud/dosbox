@@ -30,6 +30,9 @@
 #if C_DEBUG
 #include "debug.h"
 #endif
+#if C_GDBSERVER
+#include "gdbserver.h"
+#endif
 
 #include "paging.h"
 #define SegBase(c)	SegPhys(c)
@@ -146,6 +149,12 @@ Bits CPU_Core_Simple_Run(void) {
 		if (DEBUG_HeavyIsBreakpoint()) {
 			FillFlags();
 			return debugCallback;
+		};
+#endif
+#if C_GDBSERVER
+		if (GDB_HeavyCheck()) {
+			FillFlags();
+			return CBRET_NONE;
 		};
 #endif
 		cycle_count++;

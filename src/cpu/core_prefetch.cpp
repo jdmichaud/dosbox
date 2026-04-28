@@ -33,6 +33,9 @@
 #if C_DEBUG
 #include "debug.h"
 #endif
+#if C_GDBSERVER
+#include "gdbserver.h"
+#endif
 
 #if (!C_CORE_INLINE)
 #define LoadMb(off) mem_readb(off)
@@ -226,6 +229,12 @@ Bits CPU_Core_Prefetch_Run(void) {
 		if (DEBUG_HeavyIsBreakpoint()) {
 			FillFlags();
 			return debugCallback;
+		};
+#endif
+#if C_GDBSERVER
+		if (GDB_HeavyCheck()) {
+			FillFlags();
+			return CBRET_NONE;
 		};
 #endif
 		cycle_count++;

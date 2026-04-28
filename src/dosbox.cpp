@@ -97,6 +97,9 @@ void PIC_Init(Section*);
 void TIMER_Init(Section*);
 void BIOS_Init(Section*);
 void DEBUG_Init(Section*);
+#if C_GDBSERVER
+void GDB_Init(Section*);
+#endif
 void CMOS_Init(Section*);
 
 void MSCDEX_Init(Section*);
@@ -355,6 +358,27 @@ static void DOSBOX_RealInit(Section * sec) {
 		section->HandleInputline(std::string("machine=") + cmd_machine);
 	}
 
+#if C_GDBSERVER
+	{
+		Section* gdbsec = control->GetSection("gdbserver");
+		if (gdbsec) {
+			int cmd_gdb_port = 0;
+			bool have_port = control->cmdline->FindInt("-gdbserver",cmd_gdb_port,true);
+			bool have_wait = control->cmdline->FindExist("-gdbserver-wait",true);
+			bool have_bare = control->cmdline->FindExist("-gdbserver",true);
+			if (have_port || have_wait || have_bare) {
+				gdbsec->HandleInputline("enabled=true");
+				if (have_port) {
+					char buf[32];
+					snprintf(buf,sizeof(buf),"port=%d",cmd_gdb_port);
+					gdbsec->HandleInputline(buf);
+				}
+				if (have_wait) gdbsec->HandleInputline("wait_for_connection=true");
+			}
+		}
+	}
+#endif
+
 	std::string mtype(section->Get_string("machine"));
 	svgaCard = SVGA_None; 
 	machine = MCH_VGA;
@@ -560,6 +584,17 @@ void DOSBOX_Init(void) {
 
 #if C_DEBUG
 	secprop=control->AddSection_prop("debug",&DEBUG_Init);
+#endif
+
+#if C_GDBSERVER
+	secprop=control->AddSection_prop("gdbserver",&GDB_Init,true);
+	Pbool = secprop->Add_bool("enabled",Property::Changeable::OnlyAtStart,false);
+	Pbool->Set_help("Start a GDB remote serial protocol stub on the configured TCP port.");
+	Pint = secprop->Add_int("port",Property::Changeable::OnlyAtStart,1234);
+	Pint->SetMinMax(1,65535);
+	Pint->Set_help("TCP port that the GDB stub listens on.");
+	Pbool = secprop->Add_bool("wait_for_connection",Property::Changeable::OnlyAtStart,false);
+	Pbool->Set_help("If true, DOSBox blocks before running the first guest instruction until a GDB client attaches.");
 #endif
 
 	secprop=control->AddSection_prop("sblaster",&SBLASTER_Init,true);//done

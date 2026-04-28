@@ -25,6 +25,9 @@
 #include "paging.h"
 #include "fpu.h"
 #include "debug.h"
+#if C_GDBSERVER
+#include "gdbserver.h"
+#endif
 #include "inout.h"
 #include "callback.h"
 
@@ -70,6 +73,12 @@ Bits CPU_Core_Full_Run(void) {
 		if (DEBUG_HeavyIsBreakpoint()) {
 			FillFlags();
 			return debugCallback;
+		};
+#endif
+#if C_GDBSERVER
+		if (GDB_HeavyCheck()) {
+			FillFlags();
+			return CBRET_NONE;
 		};
 #endif
 #endif

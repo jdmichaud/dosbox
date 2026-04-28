@@ -29,7 +29,9 @@ Zlib (optional)
     License: Open Source
 
 SDL_Net (optional)
-    For modem/ipx support. Get it from http://www.libsdl.org/projects/SDL_net/
+    For modem/ipx support, and required for the GDB remote-server stub
+    (--enable-gdbserver). Get it from http://www.libsdl.org/projects/SDL_net/
+    On Debian/Ubuntu: libsdl-net1.2-dev (the SDL 1.2 variant, not SDL2).
     Licensed under LGPL
 
 SDL_Sound 
@@ -53,10 +55,15 @@ If you are building from the cvs run ./autogen.sh first before doing the followi
 2. make
 
 In step 1 you could add the following switches:
---enable-debug 
-        enables the internal debugger. --enable-debug=heavy enables even more 
+--enable-debug
+        enables the internal debugger. --enable-debug=heavy enables even more
         debug options. DOSBox should then be run from a xterm and when the sdl-
         window is active press alt-pause to enter the debugger.
+
+--enable-gdbserver
+        enables a GDB remote-serial-protocol stub so that an external gdb can
+        connect over TCP and debug the DOS guest. Requires --enable-debug=heavy
+        and SDL_net. See docs/gdb-debugging.md for usage.
 
 --enable-core-inline
         enables some memory increasing inlines. This greatly increases 

@@ -414,9 +414,23 @@ if test x$have_sdl_net_lib = xyes -a x$have_sdl_net_h = xyes ; then
    LIBS="$LIBS -lSDL_net"
    AC_DEFINE(C_MODEM,1)
    AC_DEFINE(C_IPX,1)
-else 
+else
    AC_MSG_WARN([Can't find SDL_net, internal modem and ipx disabled])
 fi
+
+AH_TEMPLATE(C_GDBSERVER,[Define to 1 to enable GDB remote serial protocol stub])
+AC_ARG_ENABLE(gdbserver,AC_HELP_STRING([--enable-gdbserver],[Enable GDB remote protocol stub (requires --enable-debug=heavy and SDL_net)]),[
+  if test x$enable_gdbserver = xyes ; then
+    if test x$ac_cv_define_C_HEAVY_DEBUG != xyes -a x$enable_debug != xheavy ; then
+      AC_MSG_ERROR([--enable-gdbserver requires --enable-debug=heavy])
+    fi
+    if test x$have_sdl_net_lib != xyes -o x$have_sdl_net_h != xyes ; then
+      AC_MSG_ERROR([--enable-gdbserver requires SDL_net])
+    fi
+    AC_DEFINE(C_GDBSERVER,1)
+    AC_MSG_RESULT([GDB remote stub enabled])
+  fi
+],)
 
 AH_TEMPLATE(C_X11_XKB,[define to 1 if you have XKBlib.h and X11 lib])
 AC_CHECK_LIB(X11, main, have_x11_lib=yes, have_x11_lib=no, )
@@ -557,6 +571,7 @@ src/cpu/core_normal/Makefile
 src/cpu/core_dyn_x86/Makefile
 src/cpu/core_dynrec/Makefile
 src/debug/Makefile
+src/gdbserver/Makefile
 src/dos/Makefile
 src/fpu/Makefile
 src/gui/Makefile
